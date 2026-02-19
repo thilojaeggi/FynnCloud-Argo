@@ -43,6 +43,7 @@ spec:
             - fynncloud.ch
         backend:
           env:
+            APP_NAME: "TestCloud"
             FRONTEND_URL: "https://fynncloud.ch"
             CORS_ALLOWED_ORIGINS: "https://fynncloud.ch"
             JWT_SECRET: "changeme" # TODO: use a real secret or existingSecret
