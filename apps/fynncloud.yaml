@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fynncloud
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+spec:
+  project: fynncloud
+  source:
+    repoURL: https://github.com/FynnCloudProject/infrastructure.git
+    path: charts/fynncloud
+    targetRevision: HEAD
+    helm:
+      valuesObject:
+        gateway:
+          enabled: true
+          gatewayClassName: eg-hetzner
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+          listeners:
+            - name: http
+              protocol: HTTP
+              port: 80
+              allowedRoutes:
+                namespaces:
+                  from: Same
+            - name: https
+              protocol: HTTPS
+              port: 443
+              hostname: fynncloud.ch
+              tls:
+                mode: Terminate
+                certificateRefs:
+                  - kind: Secret
+                    name: fynncloud-tls
+              allowedRoutes:
+                namespaces:
+                  from: Same
+        httpRoute:
+          enabled: true
+          hostnames:
+            - fynncloud.ch
+        backend:
+          env:
+            FRONTEND_URL: "https://fynncloud.ch"
+            CORS_ALLOWED_ORIGINS: "https://fynncloud.ch"
+            JWT_SECRET: "changeme" # TODO: use a real secret or existingSecret
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fynncloud
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

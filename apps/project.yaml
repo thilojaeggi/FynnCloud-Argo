@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: fynncloud
+  namespace: argocd
+spec:
+  description: FynnCloud production stack
+  sourceRepos:
+    - https://github.com/FynnCloudProject/infrastructure.git
+    - https://github.com/thilojaeggi/FynnCloud-Argo.git
+  destinations:
+    - namespace: fynncloud
+      server: https://kubernetes.default.svc
+    - namespace: envoy-gateway-system
+      server: https://kubernetes.default.svc
+    - namespace: argocd
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: gateway.networking.k8s.io
+      kind: GatewayClass
+    - group: cert-manager.io
+      kind: ClusterIssuer
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"

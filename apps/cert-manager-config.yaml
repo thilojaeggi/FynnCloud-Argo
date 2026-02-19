@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-config
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: fynncloud
+  source:
+    repoURL: https://github.com/thilojaeggi/FynnCloud-Argo.git
+    path: infra/cert-manager
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    # ClusterIssuer is cluster-scoped, namespace here is just for tracking
+    namespace: fynncloud
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
