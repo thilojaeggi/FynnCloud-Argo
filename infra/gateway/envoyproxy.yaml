@@ -7,12 +7,20 @@ spec:
   provider:
     type: Kubernetes
     kubernetes:
+      envoyDeployment:
+        replicas: 3
+        pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: envoy
+                  topologyKey: kubernetes.io/hostname
+
       envoyService:
         type: LoadBalancer
         annotations:
-          # This tells Hetzner where to put the LB
           load-balancer.hetzner.cloud/location: nbg1
-          # Give it a name in the Hetzner Console
           load-balancer.hetzner.cloud/name: "fynncloud-lb-peak"
-          # Use private IP for backend communication (faster/cheaper)
           load-balancer.hetzner.cloud/use-private-ip: "true"
