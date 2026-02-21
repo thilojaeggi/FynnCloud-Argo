@@ -42,6 +42,13 @@ spec:
           hostnames:
             - fynncloud.ch
         backend:
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: ScheduleAnyway
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: backend
           env:
             APP_NAME: "FynnCloud"
             FRONTEND_URL: "https://fynncloud.ch"
