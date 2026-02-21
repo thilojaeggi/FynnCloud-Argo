@@ -1,0 +1,16 @@
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: fynncloud-image-updater
+  namespace: argocd
+spec:
+  namespace: fynncloud
+  applicationRefs:
+    - namePattern: "fynncloud-web*"
+      images:
+        - alias: "fynncloud-web"
+          imageName: "ghcr.io/fynncloudproject/web:latest"
+    - namePattern: "fynncloud-server*"
+      images:
+        - alias: "fynncloud-server"
+          imageName: "ghcr.io/fynncloudproject/server:latest"
