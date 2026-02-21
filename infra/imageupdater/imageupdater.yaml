@@ -10,11 +10,17 @@ spec:
     updateStrategy: digest
 
   applicationRefs:
-    - namePattern: "fynncloud-web*"
+    - namePattern: "fynncloud"
       images:
         - alias: "fynncloud-web"
           imageName: "ghcr.io/fynncloudproject/web:latest"
-    - namePattern: "fynncloud-server*"
-      images:
+          manifestTargets:
+            helm:
+              name: web.image.repository
+              tag: web.image.tag
         - alias: "fynncloud-server"
           imageName: "ghcr.io/fynncloudproject/server:latest"
+          manifestTargets:
+            helm:
+              name: backend.image.repository
+              tag: backend.image.tag
