@@ -1,21 +1,20 @@
-apiVersion: argocd-image-updater.argoproj.io/v1alpha1
-kind: ImageUpdater
+apiVersion: argoproj.io/v1alpha1
+kind: Application
 metadata:
-  name: fynncloud-image-updater
+  name: imageupdater
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "11"
 spec:
-  namespace: argocd
-
-  commonUpdateSettings:
-    updateStrategy: digest
-
-  applicationRefs:
-    - namePattern: "fynncloud-web*"
-      images:
-        - alias: "fynncloud-web"
-          imageName: "ghcr.io/fynncloudproject/web:latest"
-
-    - namePattern: "fynncloud-server*"
-      images:
-        - alias: "fynncloud-server"
-          imageName: "ghcr.io/fynncloudproject/server:latest"
+  project: fynncloud
+  source:
+    repoURL: https://github.com/thilojaeggi/FynnCloud-Argo.git
+    path: infra/imageupdater
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
